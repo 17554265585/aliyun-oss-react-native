@@ -26,13 +26,11 @@ RCT_REMAP_METHOD(asyncUpload, asyncUploadWithBucketName:(NSString *)bucketName o
 
         //optional fields
         put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
-            NSLog(@"%lld, %lld, %lld", bytesSent, totalByteSent, totalBytesExpectedToSend);
-
             // Only send events if anyone is listening
             if (self.hasListeners) {
                 [self sendEventWithName:@"uploadProgress" body:@{@"bytesSent":[NSString stringWithFormat:@"%lld",bytesSent],
                                                                  @"currentSize": [NSString stringWithFormat:@"%lld",totalByteSent],
-                                                                 @"currentKey": [NSString stringWithFormat:@"%lld",totalByteSent],
+                                                                 @"currentKey": objectKey,
                                                                  @"totalSize": [NSString stringWithFormat:@"%lld",totalBytesExpectedToSend]}];
             }
         };
