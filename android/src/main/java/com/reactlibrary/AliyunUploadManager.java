@@ -70,7 +70,7 @@ public class AliyunUploadManager {
      * @param options
      * @param promise
      */
-    public void asyncUpload(final ReactContext context, String bucketName, String ossFile, String sourceFile, ReadableMap options, final Promise promise) {
+    public void asyncUpload(final ReactContext context, String bucketName, final String ossFile, String sourceFile, ReadableMap options, final Promise promise) {
         // Content to file:// start
         Uri selectedVideoUri = Uri.parse(sourceFile);
 
@@ -97,8 +97,6 @@ public class AliyunUploadManager {
         metadata.setContentType("application/octet-stream");
         put.setMetadata(metadata);
 
-        final String currentKey = ossFile;
-
         // set callback
         put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
             @Override
@@ -108,7 +106,7 @@ public class AliyunUploadManager {
                 WritableMap onProgressValueData = Arguments.createMap();
                 onProgressValueData.putString("currentSize", str_currentSize);
                 onProgressValueData.putString("totalSize", str_totalSize);
-                onProgressValueData.putString("currentKey", currentKey);
+                onProgressValueData.putString("currentKey", ossFile);
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                         .emit("uploadProgress", onProgressValueData);
             }
